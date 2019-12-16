@@ -9,7 +9,7 @@ namespace BuddyPals.Versioning
     public class ConfigPackage
     {
         public ConfigType Type { get; private set; }
-        public string PathName { get; private set; }
+        public List<string> PathName { get; private set; }
 
         public enum ConfigType
         {
@@ -18,10 +18,15 @@ namespace BuddyPals.Versioning
             Null
         }
 
-        public ConfigPackage(ConfigType type, string pathName)
+        public ConfigPackage(ConfigType type, params string[] pathName)
         {
             Type = type;
-            PathName = pathName;
+            PathName = new List<string>();
+
+            foreach(string path in pathName)
+            {
+                PathName.Add(path);
+            }
         }
     }
 }

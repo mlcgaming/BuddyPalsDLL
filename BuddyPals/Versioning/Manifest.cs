@@ -8,6 +8,7 @@ namespace BuddyPals.Versioning
 {
     public class Manifest
     {
+        public bool Forced { get; private set; }
         public ModPackage Mods { get; private set; }
         public ManifestPackage ResourcePacks { get; private set; }
         public ManifestPackage ShaderPacks { get; private set; }

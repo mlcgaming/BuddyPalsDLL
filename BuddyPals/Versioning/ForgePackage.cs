@@ -8,13 +8,13 @@ namespace BuddyPals.Versioning
 {
     public class ForgePackage
     {
-        public string InstallationName { get; private set; }
-        public string ForgeVersionID { get; private set; }
+        public string LauncherDisplayName { get; private set; }
+        public string Version { get; private set; }
 
-        public ForgePackage(string installationName, string forgeVersionId)
+        public ForgePackage(string launcherDisplayName, string version)
         {
-            InstallationName = installationName;
-            ForgeVersionID = forgeVersionId;
+            LauncherDisplayName = launcherDisplayName;
+            Version = version;
         }
     }
 }
