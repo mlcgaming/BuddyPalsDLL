@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,12 +16,13 @@ namespace BuddyPals.Versioning
         public List<string> History { get; private set; }
         public ConfigPackage Config { get; private set; }
 
-        public ModPackage(string name, bool isEnabled, bool isForced, string latestFileName, ConfigPackage config, List<string> history)
+        [JsonConstructor]
+        public ModPackage(string name, bool enabled, bool forced, string latest, ConfigPackage config, List<string> history)
         {
             Name = name;
-            Enabled = isEnabled;
-            Forced = isForced;
-            Latest = latestFileName;
+            Enabled = enabled;
+            Forced = forced;
+            Latest = latest;
             Config = config;
 
             if (history.Count > 0)

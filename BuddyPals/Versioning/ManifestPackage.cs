@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace BuddyPals.Versioning
         public bool Forced { get; private set; }
         public List<string> Files { get; private set; }
 
+        [JsonConstructor]
         public ManifestPackage(bool isForced, List<string> files)
         {
             Forced = isForced;
@@ -21,6 +23,18 @@ namespace BuddyPals.Versioning
             else
             {
                 Files = new List<string>();
+            }
+        }
+        public ManifestPackage(bool isForced, params string[] files)
+        {
+            Forced = isForced;
+            Files = new List<string>();
+            if(files.Count() > 0)
+            {
+                foreach(string file in files)
+                {
+                    Files.Add(file);
+                }
             }
         }
     }

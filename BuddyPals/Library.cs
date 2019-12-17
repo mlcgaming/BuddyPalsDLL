@@ -40,14 +40,37 @@ namespace BuddyPals
         public const string FORGE_VERSION_1_12_2_2838 = "1.12.2-forge1.12.2-14.23.5.2838";
         public const string FORGE_VERSION_1_12_2_2847 = "1.12.2-forge1.12.2-14.23.5.2847";
 
-        public static string BuddyPalsAppDataDirectory { get; private set; }
+        public static string RootDirectory { get; private set; }
+        public static string VFCDirectory { get; private set; }
+        public static string VFCConfigFilePath { get; private set; }
+        public static string VFCManifestFilePath { get; private set; }
+        public static string VFCLogFilePath { get; private set; }
+        public static string UpdaterDirectory { get; private set; }
         public static string UpdaterConfigFilePath { get; private set; }
-        public static string ModpackVersionFilePath { get; private set; }
-        public static string LogFilePath { get; private set; }
-        public static string ClientAgentFile { get; private set; }
+        public static string UpdaterVersionFilePath { get; private set; }
+        public static string UpdaterLogFilePath { get; private set; }
         public static string LatestForgeVersion { get; private set; }
 
+        public static string OnlineVersionFileUrl { get; private set; }
+        public static string ModDownloadRootUrl { get; private set; }
+        public static string ConfigDownloadRootUrl { get; private set; }
+        public static string ScriptDownloadRootUrl { get; private set; }
+        public static string ResourcePackDownloadRootUrl { get; private set; }
+        public static string ShadersDownloadRootUrl { get; private set; }
+
+        public static string OnlinePTRVersionFileUrl { get; private set; }
+        public static string ModPTRDownloadRootUrl { get; private set; }
+        public static string ConfigPTRDownloadRootUrl { get; private set; }
+        public static string ScriptPTRDownloadRootUrl { get; private set; }
+        public static string ResourcePackPTRDownloadRootUrl { get; private set; }
+        public static string ShadersPTRDownloadRootUrl { get; private set; }
+
         public static List<ModPackage> Mods { get; private set; }
+        public static List<ManifestPackage> Scripts { get; private set; }
+        public static List<ManifestPackage> ResourcePacks { get; private set; }
+        public static List<ManifestPackage> ShaderPacks { get; private set; }
+
+        public static Manifest DefaultManifest { get; private set; }
 
         public const string CLIENTCODEXURL = "ftp://mc.mlcgaming.com/ADMIN/clientcodex.aes";
 
@@ -55,16 +78,41 @@ namespace BuddyPals
         {
             InitializePaths();
             InitializeMods();
+            InitializeScripts();
+            InitializeResourcePacks();
+            InitializeShaderPacks();
             LatestForgeVersion = FORGE_VERSION_1_12_2_2847;
+
+            DefaultManifest = new Manifest(false, Mods, Scripts, new ForgePackage("BuddyPals Default", LatestForgeVersion), ResourcePacks, ShaderPacks);
         }
 
         private static void InitializePaths()
         {
-            BuddyPalsAppDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BuddyPals\\");
-            UpdaterConfigFilePath = Path.Combine(BuddyPalsAppDataDirectory, "updater.conf");
-            ModpackVersionFilePath = Path.Combine(BuddyPalsAppDataDirectory, "modpack.ver");
-            LogFilePath = Path.Combine(BuddyPalsAppDataDirectory, "updater.log");
-            ClientAgentFile = Path.Combine(BuddyPalsAppDataDirectory, "client.aes");
+            RootDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BuddyPals\\");
+
+            VFCDirectory = Path.Combine(RootDirectory, "Version File Creator\\");
+            VFCConfigFilePath = Path.Combine(VFCDirectory, "options.cfg");
+            VFCManifestFilePath = Path.Combine(VFCDirectory, "Manifest");
+            VFCLogFilePath = Path.Combine(VFCDirectory, "log.txt");
+
+            UpdaterDirectory = Path.Combine(RootDirectory, "Updater\\");
+            UpdaterConfigFilePath = Path.Combine(UpdaterDirectory, "updater.cfg");
+            UpdaterVersionFilePath = Path.Combine(UpdaterDirectory, "client.ver");
+            UpdaterLogFilePath = Path.Combine(UpdaterDirectory, "log.txt");
+
+            OnlineVersionFileUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/client.ver";
+            ModDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/mods/";
+            ConfigDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/configs/";
+            ScriptDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/scripts/";
+            ResourcePackDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/resourcepacks/";
+            ShadersDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/stable/shaders/";
+
+            OnlinePTRVersionFileUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/client.ver";
+            ModPTRDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/mods/";
+            ConfigPTRDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/configs/";
+            ScriptPTRDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/scripts/";
+            ResourcePackPTRDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/resourcepacks/";
+            ShadersPTRDownloadRootUrl = "ftp://mc.mlcgaming.com/modpack/bin/ptr/shaders/";
 
             MOD_SRC_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), MOD_BIN_PATH);
             CONFIG_SRC_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CONFIG_BIN_PATH);
@@ -498,6 +546,28 @@ namespace BuddyPals
                 weather2,
                 xaeroMinimap,
                 xaeroWorldMap
+            };
+        }
+        private static void InitializeScripts()
+        {
+            Scripts = new List<ManifestPackage>
+            {
+                new ManifestPackage(false, "recipes.zs")
+            };
+        }
+        private static void InitializeResourcePacks()
+        {
+            ResourcePacks = new List<ManifestPackage>
+            {
+                new ManifestPackage(false, "JapanDiscs.zip")
+            };
+        }
+        private static void InitializeShaderPacks()
+        {
+            ShaderPacks = new List<ManifestPackage>
+            {
+                new ManifestPackage(false, "SFLP Shaders Lite - RC1.zip"),
+                new ManifestPackage(false, "SFLP Shaders Standard - R1.zip")
             };
         }
 
